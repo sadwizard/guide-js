@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body>
+  <div style='position: fixed;top: 200px;'>
+    <div class="block js-step__block">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, ea?</div>
+  </div>
+  <div class="block2 js-step__block2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, ea?</div>
+  <div>
+    <div class="block3 js-step__block3">Lorem ea?</div>
+  </div>
+  <button class='js-start-new-teach'>Начать обучение</button>
+
+
+  <div class="overlay js-step__overlay">
+    <div class="overlay__left js-step__overlay-l"></div>
+    <div class="overlay__right js-step__overlay-r"></div>
+    <div class="overlay__top js-step__overlay-t"></div>
+  </div>
+  <div class="overlay__helper js-step__hint-wr">
+    <div class="overlay__hint js-step__hint"></div>
+    <div class="overlay__btns">
+      <button class="overlay__btn js-step__btn-next">Дальше</button>
+      <button class="overlay__btn js-step__btn-cancel">Закончить</button>
+    </div>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  <script src="guide.js"></script>
+
+
+  <script>
+
+
+      var guide = new Guide([
+        {element: '.js-step__block',hint: 'some first guide hint'},
+        {element: '.js-step__block2',hint: 'some two hint'},
+        {element: '.js-step__block3' , hint: 'hint3'}
+      ],
+      {
+        outerPadding: 5
+      });
+
+
+      $('.js-start-new-teach').on('click' ,function(){
+        guide.start();
+      })
+    
+  </script>
+</body>
+</html>
