@@ -81,6 +81,8 @@ Guide.prototype.setStep = function(){
   var step = this.steps[this.currentStep].element,
       hint = this.steps[this.currentStep].hint;
 
+      console.log([document.querySelector(step)]);
+
     this.setHint(hint);
     this.setOverlayPos(step);
 }
@@ -126,11 +128,16 @@ Guide.prototype.setOverlayPos = function(step){
 
   function toStrStyle(arr){
     var r = "";
-    for(key in arr){
-      if(arr[key] > 0){
-        r+= key+": " + arr[key] +"px;";      
+    for(var key in arr){
+      if(key === ('top' || 'left' || 'right' || 'bottom')){
+        r+= key+": " + arr[key] +"px;";
       }else{
-        r+= key+": 0px;";
+        if(arr[key] > 0){
+
+          r+= key+": " + arr[key] +"px;";      
+        }else{
+          r+= key+": 0px;";
+        }
       }
     }
     return r;
@@ -166,5 +173,3 @@ Guide.prototype.stepCurrentPos = function(el){
     left: oLeft
   }
 };
-
-
