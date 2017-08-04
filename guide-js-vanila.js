@@ -21,8 +21,6 @@ var Guide = function(steps , options){
   this.nextStepBtn = qs('.js-step__btn-next');
   this.cancelStepsBtn = qs('.js-step__btn-cancel');
 
-
-
 };
 
 Guide.prototype.start = function(){
@@ -62,14 +60,19 @@ Guide.prototype.events = {
     }
 
     if(this.currentStep <= (this.steps.length-1)){
-      
       this.setStep();
     }
   },
-
+ 
   cancel: function(){
+      
       this.overlay.classList.remove('_active');  
       this.overlayHintWr.classList.remove('_active');
+
+      // удаляем текущий шаг с блока overlay__helper
+      if(this.options.followHelperCurrentStep){
+         this.overlayHintWr.classList.remove(this.getCurrentStepClass());
+      }
 
       this.nextStepBtn.removeEventListener('click' , this.listeners.nextStep);
       this.cancelStepsBtn.removeEventListener('click' , this.listeners.cancel);
@@ -80,8 +83,6 @@ Guide.prototype.events = {
 Guide.prototype.setStep = function(){
   var step = this.steps[this.currentStep].element,
       hint = this.steps[this.currentStep].hint;
-
-      console.log([document.querySelector(step)]);
 
     this.setHint(hint);
     this.setOverlayPos(step);
@@ -133,7 +134,6 @@ Guide.prototype.setOverlayPos = function(step){
         r+= key+": " + arr[key] +"px;";
       }else{
         if(arr[key] > 0){
-
           r+= key+": " + arr[key] +"px;";      
         }else{
           r+= key+": 0px;";
@@ -146,14 +146,54 @@ Guide.prototype.setOverlayPos = function(step){
 
 Guide.prototype.setHint = function(text){
 
+  // класс элемента шага
   var step = this.steps[this.currentStep].element;
+  // текущая позиция шага
   var stepPos = this.stepCurrentPos(step);
 
-  var top = (stepPos.height+ stepPos.top + this.outerPadding + 10) + 'px';
-  var left = (stepPos.left+ 10) + 'px';
-  this.overlayHintTxt.innerHTML = text;
-  this.overlayHintWr.style = "top: "+top+";left: "+left+";";
 
+  this.overlayHintTxt.innerHTML = text;
+
+
+  // опция нужна для того чтобы была возможность позиционировать
+  // блок overlay__halper в зависимости от текущего шага
+  if(this.options.followHelperCurrentStep){
+
+    this.overlayHintWr.classList.add(step.slice(1));
+    var prevClass = this.getPrevStepClass();
+
+    if(prevClass){
+      this.overlayHintWr.classList.remove(prevClass); 
+    }
+  }else{
+
+    // автоматическая расположение блока overlay__helper
+    var top = (stepPos.height+ stepPos.top + this.outerPadding + 10) + 'px';
+    var left = (stepPos.left+ 10) + 'px';
+    this.overlayHintWr.style = "top: "+top+";left: "+left+";";
+  }
+
+
+}
+
+Guide.prototype.getPrevStepClass = function() {
+  var className = '';
+  var step = this.currentStep - 1;
+  if(step == -1){
+    step = false;
+  }
+
+  if(step || (step === 0)){
+    className = this.steps[step].element;
+  }else{
+    className = false;
+  }
+  className = typeof className === "string" ?  className.slice(1) : className;
+  return className;
+}
+
+Guide.prototype.getCurrentStepClass = function() {
+  return this.steps[this.currentStep].element;
 }
 
 Guide.prototype.stepCurrentPos = function(el){
